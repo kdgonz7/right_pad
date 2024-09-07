@@ -9,7 +9,8 @@ pub mod pad {
 
     #[derive(Debug, PartialEq, Eq)]
     pub enum PadErr {
-        Overflow,
+        RightOverflow,
+        LeftOverflow,
         StringDoesntFit,
     }
 
@@ -28,7 +29,7 @@ pub mod pad {
 
         if text.len() > spaces {
             if !rules.truncate {
-                return Err(PadErr::Overflow);
+                return Err(PadErr::RightOverflow);
             }
 
             if rules.use_ellipsis {
@@ -59,16 +60,43 @@ pub mod pad {
 
         Ok(s)
     }
+
+    pub fn left_pad<'a>(text: &'a str, spaces: usize, rules: &'a PadRules) -> PadResult {
+        let mut s = String::new();
+        
+        if text.len() > spaces {
+            return Err(PadErr::LeftOverflow);
+        }
+        
+        let spaces_needed_to_fit = spaces - text.len();
+
+        if spaces_needed_to_fit > 0 {
+            for _ in 0..spaces_needed_to_fit {
+                s.push(rules.pad_char);
+            }
+        }
+
+        s.push_str(text);
+
+        Ok(s)
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::pad::{right_pad, PadRules};
+    use crate::pad::{left_pad, right_pad, PadRules};
 
     #[test]
     fn test_right_pad() {
         assert_eq!(right_pad("hello", 6, &PadRules::default()).unwrap(), "hello ");
         assert_eq!(right_pad("hello", 7, &PadRules::default()).unwrap(), "hello  ");
         assert_eq!(right_pad("hel", 7, &PadRules::default()).unwrap(), "hel    ");
+    }
+
+    #[test]
+    fn test_left_pad() {
+        assert_eq!(left_pad("hello", 7, &PadRules::default()).unwrap(), "  hello");
+        assert_eq!(left_pad("helloe", 7, &PadRules::default()).unwrap(), " helloe");
+        assert_eq!(left_pad("helloea", 7, &PadRules::default()).unwrap(), "helloea");
     }
 }
