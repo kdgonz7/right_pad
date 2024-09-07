@@ -1,5 +1,3 @@
-use pad::PadRules;
-
 mod pad {
     type PadResult = Result<String, PadErr>;
 
