@@ -29,13 +29,11 @@ pub mod pad {
 
         if text.len() > spaces {
             if !rules.truncate {
-                return Err(PadErr::RightOverflow);
+                return Err(PadErr::RightOverflow)
             }
 
-            if rules.use_ellipsis {
-                if spaces < 4 {
-                    return Err(PadErr::StringDoesntFit);
-                }
+            if rules.use_ellipsis && spaces < 4 {
+                return Err(PadErr::StringDoesntFit)
             }
 
             s.clear();
