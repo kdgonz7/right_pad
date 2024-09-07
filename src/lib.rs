@@ -1,4 +1,4 @@
-mod pad {
+pub mod pad {
     type PadResult = Result<String, PadErr>;
 
     pub struct PadRules {
