@@ -33,8 +33,10 @@ mod pad {
                 return Err(PadErr::Overflow);
             }
 
-            if spaces < 4 {
-                return Err(PadErr::StringDoesntFit);
+            if rules.use_ellipsis {
+                if spaces < 4 {
+                    return Err(PadErr::StringDoesntFit);
+                }
             }
 
             s.clear();
