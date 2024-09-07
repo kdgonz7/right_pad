@@ -6,6 +6,7 @@ mod pad {
     pub struct PadRules {
         pub pad_char: char,
         pub truncate: bool,
+        pub use_ellipsis: bool,
     }
 
     #[derive(Debug, PartialEq, Eq)]
@@ -19,6 +20,7 @@ mod pad {
             Self {
                 pad_char: ' ',
                 truncate: true,
+                use_ellipsis: false,
             }
         }
     }
@@ -36,8 +38,13 @@ mod pad {
             }
 
             s.clear();
-            s.push_str(&text[0..spaces - 3]);
-            s.push_str("...");
+
+            if rules.use_ellipsis {
+                s.push_str(&text[0..spaces - 3]);
+                s.push_str("...");
+            } else {
+                s.push_str(&text[0..spaces-1]);
+            }
         }
 
         let spaces_needed_to_fit = spaces - s.len();
